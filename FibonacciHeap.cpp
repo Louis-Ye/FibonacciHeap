@@ -13,7 +13,7 @@ For instance, you may record every FibNode<T> * returned by FibonacciHeap.push()
 
 
 //------------------------------------ NODE ------------------------------------
-template<class K, class ID>
+template<class T>
 class FibNode {
 public:
 	T getKey() { return key; }
@@ -21,6 +21,9 @@ public:
 	bool compare(FibNode<T> * other) {
 		return key < other->getKey();
 	}
+
+	int getID() { return id; }
+	void setID(int i) { id = i; }
 
 	FibNode<T> * getParent() { return parent; }
 	void setParent(FibNode<T> * p) { parent = p; }
@@ -42,7 +45,7 @@ public:
 	void incRank() { rank += 1; }
 	void decRank() { rank -= 1; }
 
-	FibNode (T k) {
+	FibNode (T k, int i) {
 		key = k;
 		parent = NULL;
 		leftSib = NULL;
@@ -50,6 +53,7 @@ public:
 		child = NULL;
 		flag = false;
 		rank = 0;
+		id = i;
 	}
 
 private:
@@ -60,11 +64,13 @@ private:
 	FibNode<T> * child;
 	bool flag;
 	int rank;
+	int id;
+
 };
 
 
 //------------------------------------ HEAP ------------------------------------
-template<class K, class ID>
+template<class T>
 class FibonacciHeap {
 public:
 	bool empty() {
@@ -112,21 +118,21 @@ public:
 			next = cur->getRightSib();
 			int curRank = cur->getRank();
 			if (ranks[curRank] != NULL) cur = merge(cur, ranks[curRank]);
-			ranks[curRank] = cur;
+			ranks[cur->getRank()] = cur;
 			cur = next;
 		}
 	}
 
 
 	//.........................................................................
-	FibNode<T> * push(T k) {
+	FibNode<T> * push(T k, int id) {
 		if (rootEntry == NULL) {
-			rootEntry = new FibNode<T>(k);
+			rootEntry = new FibNode<T>(k, totalNum++);
 			minNode = rootEntry;
 			heapSize = 1;
 		}
 		else {
-			addToRootList(new FibNode<T>(k));
+			addToRootList(new FibNode<T>(k, totalNum++));
 			heapSize += 1;
 		}
 	}
@@ -139,20 +145,20 @@ public:
 
 
 	//.........................................................................
-	void decreaseKey(FibNode<T> * nd, T ky) {
+	void decreaseKey(FibNode<T> * nd, T k) {
 		if (empty()) return;
 		/*
 		//Judge if the new key is actually larger than the previous one
-		FibNode<T> tmp(ky);
+		FibNode<T> tmp(k, -1);
 		if (nd->compare(&tmp)) { //If yes, cancel the decreaseKey operation
 			return;
 		}
 		*/
 
 		//keep doing the decreaseKey operation
-		nd->setKey(ky);
+		nd->setKey(k);
 		if (nd->compare(minNode)) minNode = nd;
-		if (nd->getParent != NULL) {
+		if (nd->getParent() != NULL) {
 			FibNode<T> * par = nd->getParent();
 			if (nd->compare(par)) { //If nd is smaller than the parent
 				deleteFromParent(nd, par);
@@ -163,20 +169,22 @@ public:
 
 	//.........................................................................
 	FibonacciHeap() {
-		heapSize = 0;
 		rootEntry = NULL;
 		minNode = NULL
+		heapSize = 0;
+		totalNum = 0;
 	}
 
 	~FibonacciHeap() {
 	}
 
-	int static const MAX_RANK = 128;
+	int static const MAX_RANK = 32;
 
 private:
 	FibNode<T> * rootEntry;
 	FibNode<T> * minNode;
 	int heapSize;
+	int totalNum;
 
 	void addToRootList(FibNode<T> * nd) {
 		nd->setLeftSib(NULL);
@@ -224,6 +232,7 @@ private:
 		sma->setParent(big);
 		sma->setRightSib(child);
 		if (child != NULL) child->setLeftSib(sma);
+		return big;
 	}
 
 };
