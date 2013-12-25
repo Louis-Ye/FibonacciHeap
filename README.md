@@ -4,7 +4,7 @@ FibonacciHeap
 
 A library which offers Fibonacci Heap data structure and corresponding operations.<br>
 
-The interfaces of this library are much like the interfaces of piority queue in STL.<br>
+The interfaces of this library are much like the ones of piority queue in STL.<br>
 
 Example of how to use:
 ```cpp
