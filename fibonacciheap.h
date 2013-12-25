@@ -9,10 +9,12 @@ For user's convenience,
 there is a integer field of getID() and setID() in each FinNode<T> object
 
 */
+
 #ifndef FIBONACCIHEAP_H
 #define FIBONACCIHEAP_H
 
 #include <iostream>
+#include <math.h>
 
 //------------------------------------ NODE ------------------------------------
 template<class T>
@@ -112,8 +114,9 @@ public:
 		heapSize -= 1;
 
 
-		FibNode<T> * ranks[MAX_RANK];
-		for (int i=0; i<MAX_RANK; i++) ranks[i] = NULL;
+		int mRank = (int)log2((double)heapSize) + 1;
+		FibNode<T> * ranks[mRank];
+		for (int i=0; i<mRank; i++) ranks[i] = NULL;
 		cur = rootEntry;
 		next = cur->getRightSib();
 		while (cur != NULL) {
