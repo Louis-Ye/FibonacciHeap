@@ -13,7 +13,7 @@ For instance, you may record every FibNode<T> * returned by FibonacciHeap.push()
 
 
 //------------------------------------ NODE ------------------------------------
-template<class T>
+template<class K, class ID>
 class FibNode {
 public:
 	T getKey() { return key; }
@@ -64,7 +64,7 @@ private:
 
 
 //------------------------------------ HEAP ------------------------------------
-template<class T>
+template<class K, class ID>
 class FibonacciHeap {
 public:
 	bool empty() {
@@ -89,6 +89,7 @@ public:
 	void pop() {
 		if (empty()) return;
 
+
 		FibNode<T> * cur = minNode->getChild();
 		FibNode<T> * next = NULL;
 		while (cur != NULL) {
@@ -97,10 +98,23 @@ public:
 			cur = next;
 		}
 
+
 		deleteFromRootList(minNode);
+		delete minNode;
 		heapSize -= 1;
 
-		
+
+		FibNode<T> * ranks[MAX_RANK];
+		for (i = 0; i<MAX_RANK; i++) ranks[i] = NULL;
+		cur = rootEntry;
+		next = NULL;
+		while (cur != NULL) {
+			next = cur->getRightSib();
+			int curRank = cur->getRank();
+			if (ranks[curRank] != NULL) cur = merge(cur, ranks[curRank]);
+			ranks[curRank] = cur;
+			cur = next;
+		}
 	}
 
 
@@ -113,7 +127,6 @@ public:
 		}
 		else {
 			addToRootList(new FibNode<T>(k));
-			if ( rootEntry->compare(minNode) ) minNode = rootEntry;
 			heapSize += 1;
 		}
 	}
@@ -142,17 +155,7 @@ public:
 		if (nd->getParent != NULL) {
 			FibNode<T> * par = nd->getParent();
 			if (nd->compare(par)) { //If nd is smaller than the parent
-
-				nd->setParent(NULL);
-				par->decRank();
-				FibNode<T> * left = nd->getLeftSib();
-				FibNode<T> * right = nd->getRightSib();
-
-				if (par->getChild == nd) par->setChild(right); //nd is the first child
-				if (left != NULL) left->setRightSib(right);
-				if (right != NULL) right->setLeftSib(left);
-
-				addToRootList(nd);
+				deleteFromParent(nd, par);
 			}
 		}
 	}
@@ -180,6 +183,7 @@ private:
 		nd->setRightSib(rootEntry);
 		rootEntry->setLeftSib(nd);
 		rootEntry = nd;
+		if ( rootEntry->compare(minNode) ) minNode = rootEntry;
 	}
 
 	void deleteFromRootList(FibNode<T> * nd) {
@@ -188,6 +192,38 @@ private:
 		if (rootEntry == nd) rootEntry = right;
 		if (left != NULL) left->setRightSib(right);
 		if (right != NULL) right->setLeftSib(left);
-		delete nd;
 	}
+
+	void deleteFromParent(FibNode<T> * nd, FibNode<T> * par) {
+		nd->setParent(NULL);
+		par->decRank();
+		FibNode<T> * left = nd->getLeftSib();
+		FibNode<T> * right = nd->getRightSib();
+
+		if (par->getChild == nd) par->setChild(right); //nd is the first child
+		if (left != NULL) left->setRightSib(right);
+		if (right != NULL) right->setLeftSib(left);
+
+		addToRootList(nd);
+
+		if (par->isMark()) {
+			grandPar = par->getParent();
+			par->unmark();
+			if (grandPar != NULL) deleteFromParent(par, grandPar);
+		}
+		else par->mark();
+	}
+
+	FibNode<T> * merge(FibNode<T> * a, FibNode<T> * b) {
+		FibNode<T> * big = a->compare(b) ? b : a;
+		FibNode<T> * sma = a->compare(b) ? a : b;
+		deleteFromRootList(sma);
+		FibNode<T> * child = big->getChild();
+		big->setChild(sma);
+		big->incRank();
+		sma->setParent(big);
+		sma->setRightSib(child);
+		if (child != NULL) child->setLeftSib(sma);
+	}
+
 };
