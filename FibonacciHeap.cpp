@@ -86,7 +86,6 @@ public:
 
 	//.........................................................................
 	T top() {
-		if (empty()) return;
 		return minNode->getKey();
 	}
 
@@ -107,26 +106,34 @@ public:
 
 		deleteFromRootList(minNode);
 		delete minNode;
+		minNode = rootEntry;
 		heapSize -= 1;
 
 
 		FibNode<T> * ranks[MAX_RANK];
-		for (i = 0; i<MAX_RANK; i++) ranks[i] = NULL;
+		for (int i=0; i<MAX_RANK; i++) ranks[i] = NULL;
 		cur = rootEntry;
-		next = NULL;
+		next = cur->getRightSib();
 		while (cur != NULL) {
-			next = cur->getRightSib();
-			int curRank = cur->getRank();
-			if (ranks[curRank] != NULL) cur = merge(cur, ranks[curRank]);
+
+			int curRank = cur->getRank(); //Record the rank before merge
+			if (ranks[curRank] != NULL) {
+				cur = merge(cur, ranks[curRank]);
+				ranks[curRank] = NULL;
+			}
+			if (cur->compare(minNode)) minNode = cur; //Update min node
+			if (ranks[cur->getRank()] != NULL) continue; //If there is tree to be merged at the new rank, continue
+
 			ranks[cur->getRank()] = cur;
 			cur = next;
+			if (cur != NULL) next = cur->getRightSib();
 		}
 	}
 
 
 	//.........................................................................
-	FibNode<T> * push(T k, int id) {
-		if (rootEntry == NULL) {
+	FibNode<T> * push(T k) {
+		if (empty()) {
 			rootEntry = new FibNode<T>(k, totalNum++);
 			minNode = rootEntry;
 			heapSize = 1;
@@ -135,6 +142,7 @@ public:
 			addToRootList(new FibNode<T>(k, totalNum++));
 			heapSize += 1;
 		}
+		return rootEntry;
 	}
 
 
@@ -167,10 +175,41 @@ public:
 	}
 
 
+	void printHeap() {
+
+		FibNode<T> * allnodes[heapSize];
+		FibNode<T> * cur = rootEntry;
+		FibNode<T> * next = NULL;
+		int f=0, s=0;
+
+		printf("---------------------heapSize=%d-------------------------------\n", heapSize);
+		printf("minNode:(key=%d, id=%d)\n", minNode->getKey(), minNode->getID());
+
+		while (cur != NULL) {
+			next = cur->getRightSib();
+			allnodes[s++] = cur;
+			printf("#########\nroot : (key=%d, id=%d, rank=%d)\n", cur->getKey(), cur->getID(), cur->getRank());
+			while (f < s) {
+				FibNode<T> * father = allnodes[f];
+				FibNode<T> * son = father->getChild();
+				while (son != NULL) {
+					printf("father:(key=%d, id=%d, rank=%d), son:(key=%d, id=%d, rank=%d)\n",father->getKey(), father->getID(), father->getRank(), son->getKey(), son->getID(), son->getRank());
+					allnodes[s++] = son;
+					son = son->getRightSib();
+				}
+				printf("\n");
+				f++;
+			}
+			cur = next;
+		}
+
+	}
+
+
 	//.........................................................................
 	FibonacciHeap() {
 		rootEntry = NULL;
-		minNode = NULL
+		minNode = NULL;
 		heapSize = 0;
 		totalNum = 0;
 	}
@@ -195,8 +234,8 @@ private:
 	}
 
 	void deleteFromRootList(FibNode<T> * nd) {
-		left = nd->getLeftSib();
-		right = nd->getRightSib();
+		FibNode<T> * left = nd->getLeftSib();
+		FibNode<T> * right = nd->getRightSib();
 		if (rootEntry == nd) rootEntry = right;
 		if (left != NULL) left->setRightSib(right);
 		if (right != NULL) right->setLeftSib(left);
@@ -208,14 +247,14 @@ private:
 		FibNode<T> * left = nd->getLeftSib();
 		FibNode<T> * right = nd->getRightSib();
 
-		if (par->getChild == nd) par->setChild(right); //nd is the first child
+		if (par->getChild() == nd) par->setChild(right); //nd is the first child
 		if (left != NULL) left->setRightSib(right);
 		if (right != NULL) right->setLeftSib(left);
 
 		addToRootList(nd);
 
 		if (par->isMark()) {
-			grandPar = par->getParent();
+			FibNode<T> * grandPar = par->getParent();
 			par->unmark();
 			if (grandPar != NULL) deleteFromParent(par, grandPar);
 		}
@@ -225,14 +264,24 @@ private:
 	FibNode<T> * merge(FibNode<T> * a, FibNode<T> * b) {
 		FibNode<T> * big = a->compare(b) ? b : a;
 		FibNode<T> * sma = a->compare(b) ? a : b;
-		deleteFromRootList(sma);
-		FibNode<T> * child = big->getChild();
-		big->setChild(sma);
-		big->incRank();
-		sma->setParent(big);
-		sma->setRightSib(child);
-		if (child != NULL) child->setLeftSib(sma);
-		return big;
+		deleteFromRootList(big);
+		FibNode<T> * child = sma->getChild();
+		sma->setChild(big);
+		sma->incRank();
+		big->setParent(sma);
+		big->setRightSib(child);
+		if (child != NULL) child->setLeftSib(big);
+		return sma;
 	}
 
 };
+
+
+/*
+printf("ranks# cur key=%d\n", cur->getKey());
+			for (int i=0; i<heapSize; i++) {
+				if (ranks[i] == NULL) printf("i=%d, key=NULL\n", i);
+				else printf("i=%d, key=%d\n", i, ranks[i]->getKey());
+			}
+
+*/
