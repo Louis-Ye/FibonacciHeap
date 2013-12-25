@@ -9,6 +9,8 @@ For user's convenience,
 there is a integer field of getID() and setID() in each FinNode<T> object
 
 */
+#ifndef FIBONACCIHEAP_H
+#define FIBONACCIHEAP_H
 
 #include <iostream>
 
@@ -293,3 +295,4 @@ private:
 
 };
 
+#endif
