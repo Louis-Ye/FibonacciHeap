@@ -5,11 +5,13 @@ Author: Louis Ye
 ATTENTION:
 In order to decrease the key, you needs to maintain an array of FibNode<T> * yourself.
 For instance, you may record every FibNode<T> * returned by FibonacciHeap.push()
+For user's convenience,
+there is a integer field of getID() and setID() in each FinNode<T> object
 
 */
 
 
-#include <iostream>
+#include "fibonacciheap.h"
 
 
 //------------------------------------ NODE ------------------------------------
@@ -155,13 +157,10 @@ public:
 	//.........................................................................
 	void decreaseKey(FibNode<T> * nd, T k) {
 		if (empty()) return;
-		/*
+
 		//Judge if the new key is actually larger than the previous one
 		FibNode<T> tmp(k, -1);
-		if (nd->compare(&tmp)) { //If yes, cancel the decreaseKey operation
-			return;
-		}
-		*/
+		if (nd->compare(&tmp)) return; //If yes, cancel the decreaseKey operation
 
 		//keep doing the decreaseKey operation
 		nd->setKey(k);
@@ -175,7 +174,7 @@ public:
 	}
 
 
-	void printHeap() {
+	void printHeap() { //For testing
 
 		FibNode<T> * allnodes[heapSize];
 		FibNode<T> * cur = rootEntry;
@@ -202,7 +201,6 @@ public:
 			}
 			cur = next;
 		}
-
 	}
 
 
@@ -215,6 +213,27 @@ public:
 	}
 
 	~FibonacciHeap() {
+		FibNode<T> * allnodes[heapSize];
+		FibNode<T> * cur = rootEntry;
+		FibNode<T> * next = NULL;
+		int f=0, s=0;
+
+		while (cur != NULL) {
+			next = cur->getRightSib(); 
+			allnodes[s++] = cur;
+			while (f < s) {			//Do DFS for each tree
+				FibNode<T> * father = allnodes[f];
+				FibNode<T> * son = father->getChild();
+				while (son != NULL) {
+					allnodes[s++] = son;
+					son = son->getRightSib();
+				}
+				f++;
+			}
+			cur = next;
+		}
+
+		for (int i=0; i<heapSize; i++) delete allnodes[i]; //Deleting all the FibNodes
 	}
 
 	int static const MAX_RANK = 32;
@@ -276,12 +295,3 @@ private:
 
 };
 
-
-/*
-printf("ranks# cur key=%d\n", cur->getKey());
-			for (int i=0; i<heapSize; i++) {
-				if (ranks[i] == NULL) printf("i=%d, key=NULL\n", i);
-				else printf("i=%d, key=%d\n", i, ranks[i]->getKey());
-			}
-
-*/

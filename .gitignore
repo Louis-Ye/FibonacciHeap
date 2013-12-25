@@ -14,3 +14,9 @@
 
 # Mac OS management file
 .DS_Store
+
+# others
+main.cpp
+run.sh
+a.out
+
