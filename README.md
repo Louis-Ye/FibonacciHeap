@@ -6,7 +6,8 @@ FibonacciHeap
 2. The interfaces of this library are much like the interfaces of piority queue in STL.<br>
 3. Comparison depending on the operator < .<br>
 4. Example of how to use:
-```cpp
+
+````cpp
 #include "fibonacciheap.h"
 #include <iostream>
 
@@ -31,7 +32,7 @@ int main() {
 	return 0;
 }
 
-```
+````
 
 The output is like:
 ```cpp
