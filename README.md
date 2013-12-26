@@ -3,9 +3,9 @@ FibonacciHeap
 <b>Version 0.01</b> <br>
 
 1. A library which offers Fibonacci Heap data structure and corresponding operations.<br>
-2. The interfaces of this library are much like the interfaces of piority queue in STL.<br>
+2. The interfaces of this library are much like the ones of piority queue in STL.<br>
 3. Comparison depending on the operator < .<br>
-4. Example of how to use:
+4. Usage example:
 
 ````cpp
 #include "fibonacciheap.h"
