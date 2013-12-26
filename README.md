@@ -41,4 +41,4 @@ The output is like:
 2
 11
 ```
-
+5. <b>LICENSE</b>: MIT
