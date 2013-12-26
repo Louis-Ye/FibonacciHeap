@@ -1,12 +1,11 @@
 FibonacciHeap
 =============
-<b>(Version 0.01)</b> <br>
+<b>Version 0.01</b> <br>
 
-A library which offers Fibonacci Heap data structure and corresponding operations.<br>
-
-The interfaces of this library are much like the interfaces of piority queue in STL.<br>
-
-Example of how to use:
+1. A library which offers Fibonacci Heap data structure and corresponding operations.<br>
+2. The interfaces of this library are much like the interfaces of piority queue in STL.<br>
+3. Comparison depending on the operator < .<br>
+4. Example of how to use:
 ```cpp
 #include "fibonacciheap.h"
 #include <iostream>
