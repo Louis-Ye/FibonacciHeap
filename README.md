@@ -8,8 +8,9 @@ FibonacciHeap
 4. Comparison: depends on the operator < .
 5. Decrease Key: In order to do so, you have to maintain the pointer of each node by yourself.
 6. Creating new node: The <i>push(T key)</i> method will return the pointer and give the new node an integer ID according to the pushing sequence. You can also set the ID for each new node in your own purpose with the <i>push(T key, int id)</i> method.
-7. Usage:
-````cpp
+7. Usage: 
+
+```cpp
 #include <iostream>
 #include "fibonacciheap.h"
 
@@ -41,7 +42,7 @@ int main() {
     return 0;
 }
 
-````
+```
 
 The output is like:
 ```cpp
