@@ -4,11 +4,11 @@ FibonacciHeap
 
 1. A C++ library which offers Fibonacci Heap data structure and corresponding operations.
 2. <b>LICENSE</b>: MIT
-3. Interfaces: The interfaces of this library are much like the ones of piority queue in STL.
-4. Comparison: depends on the operator < .
-5. Decrease Key: In order to do so, you have to maintain the pointer of each node by yourself.
-6. Creating new node: The <i>push(T key)</i> method will return the pointer and give the new node an integer ID according to the pushing sequence. You can also set the ID for each new node in your own purpose with the <i>push(T key, int id)</i> method.
-7. Usage: 
+3. <b>Interfaces</b>: The interfaces of this library are much like the ones of piority queue in STL.
+4. <b>Comparison</b>: depends on the operator < .
+5. <b>Decrease Key</b>: In order to do so, you have to maintain the pointer of each node by yourself.
+6. <b>Creating new node</b>: The <i>push(T key)</i> method will return the pointer and give the new node an integer ID according to the pushing sequence. You can also set the ID for each new node in your own purpose with the <i>push(T key, int id)</i> method.
+7. <b>Usage</b>: 
 
 ```cpp
 #include <iostream>
@@ -50,4 +50,6 @@ The output is like:
 11
 2
 11
+11 1
+-100 77
 ```
