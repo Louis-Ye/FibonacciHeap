@@ -112,7 +112,7 @@ public:
 		delete minNode;
 		minNode = rootEntry;
 		heapSize -= 1;
-
+		if (rootEntry == NULL) return; //If the heap is already empty
 
 		int mRank = (int)log2((double)heapSize) + 1;
 		FibNode * ranks[mRank];
