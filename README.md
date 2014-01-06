@@ -8,7 +8,7 @@ FibonacciHeap
 4. <b>Comparison</b>: depends on the operator < .
 5. <b>Decrease Key</b>: In order to do so, you have to maintain the pointer of each node by yourself.
 6. <b>Creating new node</b>: The <i>push(T key)</i> method will return the pointer and give the new node an integer ID according to the pushing sequence. You can also set the ID for each new node in your own purpose with the <i>push(T key, int id)</i> method.
-7. <b>Time complexity</b>: <ul><li>push (insert): O(1)</li>  <li>top (get min): O(1)</li>  <li>pop (delete min): O(log(n)) amortized time</li>  <li>decrease key: O(1) amortized time</li> </ul>
+7. <b>Time complexity</b>: <ul><li><b>push</b> (insert): O(1)</li>  <li><b> top</b> (get min): O(1)</li>  <li><b>pop</b> (delete min): O(log(n)) amortized time</li>  <li><b>decrease key</b>: O(1) amortized time</li> </ul>
 8. <b>Usage</b>: 
 
 ```cpp
